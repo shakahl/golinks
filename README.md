@@ -30,9 +30,6 @@ $ brew install golinks
 recent unreleased version from master you'll have to clone the repository
 and build yourself.
 
-golinks is still early days so contributions, ideas and expertise are
-much appreciated and highly welcome!
-
 ## Usage
 
 Run golinks:
@@ -44,6 +41,10 @@ $ golinks -bind 127.0.0.1:8000
 Set your browser's default golinks engine to http://localhost:8000/?q=%s
 
 Then type `help` to view the main help page, `g foo bar` to perform a [Google](https://google.com) search for "foo bar" or `list` to list all available commands.
+
+## Contributing
+
+golinks is considered "production" software and is used daily. If you find this interresting or useful please fork and contribute back via pull-requests! If you find bugs or have ideas for new features, please file an issue!
 
 ## License
 
