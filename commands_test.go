@@ -185,3 +185,27 @@ func TestAddCommand(t *testing.T) {
 	assert.Equal(bookmark.Name(), "g")
 	assert.Equal(bookmark.URL(), "https://www.google.com/search?q=%s&btnK")
 }
+
+func TestRemoveCommand(t *testing.T) {
+	assert := assert.New(t)
+
+	db, _ = bolt.Open("test.db", 0600, nil)
+	defer db.Close()
+
+	cmd := Remove{}
+	assert.Equal(cmd.Name(), "remove")
+	assert.Contains(cmd.Desc(), "remove")
+
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest("GET", "?q=remove", nil)
+
+	args := []string{"imdb"}
+	err := cmd.Exec(w, r, args)
+	assert.Nil(err)
+
+	bookmark, ok := LookupBookmark("imdb")
+	assert.False(ok)
+
+	assert.Equal("", bookmark.Name())
+	assert.Equal("", bookmark.URL())
+}

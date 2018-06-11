@@ -27,6 +27,7 @@ func init() {
 	RegisterCommand("date", Date{})
 	RegisterCommand("time", Time{})
 	RegisterCommand("add", Add{})
+	RegisterCommand("remove", Remove{})
 }
 
 // RegisterCommand ...
@@ -198,7 +199,7 @@ func (p Add) Name() string {
 func (p Add) Desc() string {
 	return `add [name] [url]
 
-	Adds a new bookmark with the given name that will redierct to the given
+	Adds a new bookmark with the given name that will redirect to the given
 	url passing arguments as %s. For example:
 
 	add g http://google.com/search?btnK&q=%s
@@ -228,6 +229,57 @@ func (p Add) Exec(w http.ResponseWriter, r *http.Request, args []string) error {
 		err = b.Put([]byte(name), []byte(url))
 		if err != nil {
 			log.Printf("put key failed: %s", err)
+			return err
+		}
+
+		w.Write([]byte("OK"))
+
+		return nil
+	})
+
+	return err
+}
+
+
+// Remove ...
+type Remove struct{}
+
+// Name ...
+func (p Remove) Name() string {
+	return "remove"
+}
+
+// Desc ...
+func (p Remove) Desc() string {
+	return `remove [name]
+
+	Removes an existing bookmark with the given name. For example:
+
+	remove imdb
+
+	Will remove the existing command called 'imdb'.
+	`
+}
+
+// Exec ...
+func (p Remove) Exec(w http.ResponseWriter, r *http.Request, args []string) error {
+	var name string
+
+	if len(args) == 1 {
+		name = args[0]
+	} else {
+		return fmt.Errorf("expected 1 arguments got %d", len(args))
+	}
+
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("bookmarks"))
+		if b == nil {
+			return nil
+		}
+
+		err := b.Delete([]byte(name))
+		if err != nil {
+			log.Printf("delete key failed: %s", err)
 			return err
 		}
 
