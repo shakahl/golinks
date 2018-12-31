@@ -1,10 +1,10 @@
 # golinks
 
-[![Build Status](https://travis-ci.org/prologic/golinks.svg)](https://travis-ci.org/prologic/golinks)
-[![Go Report Card](https://goreportcard.com/badge/github.com/prologic/golinks)](https://goreportcard.com/report/github.com/prologic/golinks)
-[![Coverage](https://coveralls.io/repos/prologic/golinks/badge.svg)](https://coveralls.io/r/prologic/golinks)
-[![GoDoc](https://godoc.org/github.com/prologic/golinks?status.svg)](https://godoc.org/github.com/prologic/golinks)
-[![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/prologic/golinks/wiki)
+[![Build Status](https://cloud.drone.io/api/badges/prologic/msgbus/status.svg)](https://cloud.drone.io/prologic/msgbus)
+[![CodeCov](https://codecov.io/gh/prologic/msgbus/branch/master/graph/badge.svg)](https://codecov.io/gh/prologic/msgbus)
+[![Go Report Card](https://goreportcard.com/badge/prologic/msgbus)](https://goreportcard.com/report/prologic/msgbus)
+[![GoDoc](https://godoc.org/github.com/prologic/msgbus?status.svg)](https://godoc.org/github.com/prologic/msgbus) 
+[![Sourcegraph](https://sourcegraph.com/github.com/prologic/msgbus/-/badge.svg)](https://sourcegraph.com/github.com/prologic/msgbus?badge)
 
 golinks is a web app that allows you to create smart bookmarks, commands and aliases by pointing your web browser's default search engine at a running instance. Similar to bunny1 or yubnub.
 
