@@ -13,7 +13,7 @@ golinks is a web app that allows you to create smart bookmarks, commands and ali
 ### Source
 
 ```#!bash
-$ go install github.com/prologic/golinks/...
+$ go get github.com/prologic/golinks
 ```
 
 ### OS X Homebrew
