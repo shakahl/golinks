@@ -28,7 +28,7 @@ func main() {
 	flag.BoolVar(&version, "v", false, "display version information")
 
 	flag.StringVar(&config, "config", "", "config file")
-	flag.StringVar(&dbpath, "dbpth", "search.db", "Database path")
+	flag.StringVar(&dbpath, "dbpath", "search.db", "Database path")
 	flag.StringVar(&title, "title", "Search", "OpenSearch Title")
 	flag.StringVar(&bind, "bind", "0.0.0.0:8000", "[int]:<port> to bind to")
 	flag.StringVar(&fqdn, "fqdn", "localhost", "FQDN for public access")
