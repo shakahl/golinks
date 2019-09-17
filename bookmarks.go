@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/boltdb/bolt"
+	"github.com/prologic/bitcask"
 )
 
 // Bookmark ...
@@ -36,26 +36,18 @@ func (b Bookmark) Exec(w http.ResponseWriter, r *http.Request, q string) {
 
 // LookupBookmark ...
 func LookupBookmark(name string) (bookmark Bookmark, ok bool) {
-	name = strings.ToLower(name)
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("bookmarks"))
-		if b == nil {
-			return nil
-		}
-
-		v := b.Get([]byte(name))
-		if v != nil {
-			bookmark.name = name
-			bookmark.url = string(v)
-			ok = true
-		}
-
-		return nil
-	})
-
+	key := fmt.Sprintf("bookmark_%s", strings.ToLower(name))
+	val, err := db.Get([]byte(key))
 	if err != nil {
+		if err == bitcask.ErrKeyNotFound {
+			return
+		}
 		log.Printf("error looking up bookmark for %s: %s", name, err)
 	}
+
+	bookmark.name = name
+	bookmark.url = string(val)
+	ok = true
 
 	return
 }

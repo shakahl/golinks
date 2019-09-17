@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/boltdb/bolt"
 )
 
 // Command ...
@@ -87,18 +85,15 @@ func (p List) Desc() string {
 func (p List) Exec(w http.ResponseWriter, r *http.Request, args []string) error {
 	var bs, cs []string
 
-	err := db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("bookmarks"))
-		if b == nil {
-			return nil
+	prefix := []byte("bookmark_")
+	err := db.Scan(prefix, func(key []byte) error {
+		val, err := db.Get(key)
+		if err != nil {
+			return err
 		}
-
-		err := b.ForEach(func(k, v []byte) error {
-			bs = append(bs, string(k))
-			return nil
-		})
-
-		return err
+		name := strings.TrimPrefix(string(key), "bookmark_")
+		bs = append(bs, fmt.Sprintf("%s => %s", name, val))
+		return nil
 	})
 	if err != nil {
 		log.Printf("error reading list of bookmarks: %s", err)
@@ -219,27 +214,18 @@ func (p Add) Exec(w http.ResponseWriter, r *http.Request, args []string) error {
 		return fmt.Errorf("expected 2 arguments got %d", len(args))
 	}
 
-	err := db.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte("bookmarks"))
-		if err != nil {
-			log.Printf("create bucket failed: %s", err)
-			return err
-		}
+	key := []byte(fmt.Sprintf("bookmark_%s", name))
+	val := []byte(url)
 
-		err = b.Put([]byte(name), []byte(url))
-		if err != nil {
-			log.Printf("put key failed: %s", err)
-			return err
-		}
+	if err := db.Put(key, val); err != nil {
+		log.Printf("put key failed: %s", err)
+		return err
+	}
 
-		w.Write([]byte("OK"))
+	w.Write([]byte("OK"))
 
-		return nil
-	})
-
-	return err
+	return nil
 }
-
 
 // Remove ...
 type Remove struct{}
@@ -271,22 +257,13 @@ func (p Remove) Exec(w http.ResponseWriter, r *http.Request, args []string) erro
 		return fmt.Errorf("expected 1 arguments got %d", len(args))
 	}
 
-	err := db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("bookmarks"))
-		if b == nil {
-			return nil
-		}
+	key := []byte(fmt.Sprintf("bookmark_%s", name))
+	if err := db.Delete(key); err != nil {
+		log.Printf("delete key failed: %s", err)
+		return err
+	}
 
-		err := b.Delete([]byte(name))
-		if err != nil {
-			log.Printf("delete key failed: %s", err)
-			return err
-		}
+	w.Write([]byte("OK"))
 
-		w.Write([]byte("OK"))
-
-		return nil
-	})
-
-	return err
+	return nil
 }

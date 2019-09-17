@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/boltdb/bolt"
 	"github.com/namsral/flag"
+	"github.com/prologic/bitcask"
 )
 
 var (
-	db  *bolt.DB
+	db  *bitcask.Bitcask
 	cfg Config
 )
 
@@ -46,7 +46,7 @@ func main() {
 	cfg.URL = url
 
 	var err error
-	db, err = bolt.Open(dbpath, 0600, nil)
+	db, err = bitcask.Open(dbpath)
 	if err != nil {
 		log.Fatal(err)
 	}

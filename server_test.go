@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/julienschmidt/httprouter"
+	"github.com/prologic/bitcask"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -125,7 +125,7 @@ func TestCaseInsensitive(t *testing.T) {
 func TestInvalidCommand(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	s := NewServer(":8000", Config{URL: ""})
@@ -143,7 +143,7 @@ func TestInvalidCommand(t *testing.T) {
 func TestInvalidCommandDefaultURL(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	s := NewServer(":8000", Config{URL: DefaultURL})
@@ -166,7 +166,7 @@ func TestInvalidCommandDefaultURL(t *testing.T) {
 func TestCommandError(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	RegisterCommand("explode", Explode{})
@@ -186,7 +186,7 @@ func TestCommandError(t *testing.T) {
 func TestCommandBookmark(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	err := EnsureDefaultBookmarks()

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/boltdb/bolt"
+	"github.com/prologic/bitcask"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -70,7 +70,7 @@ func TestPingCommand(t *testing.T) {
 func TestListCommand(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	err := EnsureDefaultBookmarks()
@@ -165,7 +165,7 @@ func TestDateCommand(t *testing.T) {
 func TestAddCommand(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	cmd := Add{}
@@ -189,7 +189,7 @@ func TestAddCommand(t *testing.T) {
 func TestRemoveCommand(t *testing.T) {
 	assert := assert.New(t)
 
-	db, _ = bolt.Open("test.db", 0600, nil)
+	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
 	cmd := Remove{}
