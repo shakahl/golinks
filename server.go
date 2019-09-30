@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"sort"
 	"strings"
+	"time"
 
 	// Logging
 	"github.com/unrolled/logger"
@@ -20,6 +23,12 @@ import (
 	rice "github.com/GeertJohan/go.rice"
 	"github.com/NYTimes/gziphandler"
 	"github.com/julienschmidt/httprouter"
+)
+
+var (
+	client = &http.Client{
+		Timeout: 5 * time.Second,
+	}
 )
 
 // Counters ...
@@ -206,8 +215,33 @@ func (s *Server) OpenSearchHandler() httprouter.Handle {
 				OpenSearchTemplate,
 				s.config.Title,
 				s.config.FQDN,
+				s.config.FQDN,
 			)),
 		)
+	}
+}
+
+// SuggestionsHandler ...
+func (s *Server) SuggestionsHandler() httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		// Query ?q=
+		q := r.URL.Query().Get("q")
+		resp, err := client.Get(fmt.Sprintf(s.config.SuggestURL, url.QueryEscape(q)))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode > 200 {
+			http.Error(w, "request failed", resp.StatusCode)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
@@ -248,6 +282,7 @@ func (s *Server) initRoutes() {
 	s.router.GET("/help", s.HelpHandler())
 	s.router.GET("/list", s.ListHandler())
 	s.router.GET("/opensearch.xml", s.OpenSearchHandler())
+	s.router.GET("/suggest", s.SuggestionsHandler())
 }
 
 // NewServer ...

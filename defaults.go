@@ -4,8 +4,12 @@ import (
 	"net/http/httptest"
 )
 
-// DefaultURL redirects to Google Search by default for unknown queries
-const DefaultURL string = "https://www.google.com/search?q=%s&btnK"
+const (
+	// DefaultURL redirects to Google Search by default for unknown queries
+	DefaultURL string = "https://www.google.com/search?q=%s&btnK"
+	// DefaultSuggestURL provides search suggestions from Google
+	DefaultSuggestURL string = "https://suggestqueries.google.com/complete/search?client=firefox&q=%s"
+)
 
 // DefaultBookmarks ...
 var DefaultBookmarks map[string]string

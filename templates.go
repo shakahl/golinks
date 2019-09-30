@@ -16,6 +16,7 @@ const OpenSearchTemplate string = `<?xml version="1.0" encoding="UTF-8"?>
   <Tags>search</Tags>
   <Contact>admin@localhost</Contact>
   <Url type="text/html" method="get" template="http://%s/?q={searchTerms}"/>
+  <Url type="application/x-suggestions+json" method="get" template="http://%s/suggest?q={searchTerms}"/>
 </OpenSearchDescription>
 `
 

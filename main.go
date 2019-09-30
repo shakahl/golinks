@@ -16,13 +16,14 @@ var (
 
 func main() {
 	var (
-		version bool
-		config  string
-		dbpath  string
-		title   string
-		fqdn    string
-		bind    string
-		url     string
+		version    bool
+		config     string
+		dbpath     string
+		title      string
+		fqdn       string
+		bind       string
+		url        string
+		suggestURL string
 	)
 
 	flag.BoolVar(&version, "v", false, "display version information")
@@ -33,6 +34,8 @@ func main() {
 	flag.StringVar(&bind, "bind", "0.0.0.0:8000", "[int]:<port> to bind to")
 	flag.StringVar(&fqdn, "fqdn", "localhost:8000", "FQDN for public access")
 	flag.StringVar(&url, "url", DefaultURL, "default URL to redirect to")
+	flag.StringVar(&suggestURL, "suggest", DefaultSuggestURL,
+		"default URL to retrieve search suggestions from")
 
 	flag.Parse()
 
@@ -44,6 +47,7 @@ func main() {
 	cfg.Title = title
 	cfg.FQDN = fqdn
 	cfg.URL = url
+	cfg.SuggestURL = suggestURL
 
 	var err error
 	db, err = bitcask.Open(dbpath)

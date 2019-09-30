@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/xml"
 	"strconv"
 )
 
@@ -11,4 +13,13 @@ func SafeParseInt(s string, d int) int {
 		return d
 	}
 	return n
+}
+
+// EscapeXML makes string XML-safe.
+func EscapeXML(s string) (string, error) {
+	b := &bytes.Buffer{}
+	if err := xml.EscapeText(b, []byte(s)); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }
