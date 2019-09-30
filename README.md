@@ -4,6 +4,7 @@
 [![CodeCov](https://codecov.io/gh/prologic/golinks/branch/master/graph/badge.svg)](https://codecov.io/gh/prologic/golinks)
 [![Go Report Card](https://goreportcard.com/badge/prologic/golinks)](https://goreportcard.com/report/prologic/golinks)
 [![GoDoc](https://godoc.org/github.com/prologic/golinks?status.svg)](https://godoc.org/github.com/prologic/golinks) 
+[![GitHub license](https://img.shields.io/github/license/prologic/golinks.svg)](https://github.com/prologic/golinks)
 
 golinks is a web app that allows you to create smart bookmarks, commands and aliases by pointing your web browser's default search engine at a running instance. Similar to bunny1 or yubnub.
 
@@ -68,6 +69,18 @@ To remove a search, use `remove [name]`, so `remove ddg` will remove the above s
 ### Other commands
 
 Use `list` to see all your bookmarks and commands (golinks comes with several useful built-ins) and `help` to view the online help page.
+
+## Stargazers over time
+
+[![Stargazers over time](https://starcharts.herokuapp.com/prologic/golinks.svg)](https://starcharts.herokuapp.com/prologic/golinks)
+
+## Support
+
+Support the ongoing development of Bitcask!
+
+**Sponser**
+
+- Become a [Sponser](https://www.patreon.com/prologic)
 
 ## Contributing
 
