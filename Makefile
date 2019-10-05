@@ -1,4 +1,4 @@
-.PHONY: dev build image test deps clean
+.PHONY: dev build image release test deps clean
 
 CGO_ENABLED=0
 COMMIT=`git rev-parse --short HEAD`
@@ -26,6 +26,9 @@ build: clean deps
 image:
 	@docker build --build-arg TAG=$(TAG) --build-arg BUILD=$(BUILD) -t $(REPO):$(TAG) .
 	@echo "Image created: $(REPO):$(TAG)"
+
+release:
+	@./tools/release.sh
 
 profile:
 	@go test -cpuprofile cpu.prof -memprofile mem.prof -v -bench ./...
