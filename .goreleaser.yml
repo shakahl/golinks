@@ -1,23 +1,29 @@
 builds:
-  - binary: golinks
+  - 
+    binary: golinks
+    main: .
     flags: -tags "static_build"
-    ldflags: -w -X main.Version={{.Version}} -X main.Commit={{.Commit}}
+    ldflags: -w -X github.com/prologic/golinks/.Version={{.Version}} -X github.com/prologic/golinks/.Commit={{.Commit}}
     env:
       - CGO_ENABLED=0
-    goos:
-      - darwin
-      - freebsd
-      - linux
-      - windows
-    goarch:
-      - i386
-      - amd64
-      - arm
-      - amd64
-    goarm:
-      - 6
-      - 7
     hooks:
       pre: rice embed-go
 sign:
   artifacts: checksum
+archive:
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

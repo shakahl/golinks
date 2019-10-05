@@ -1,9 +1,9 @@
 *~*
 *.db
-dist
 *.bak
-.idea/
 
+/dist
+/.idea
 /golinks
 /golinks-*
 /rice-box.go
