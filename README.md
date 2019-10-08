@@ -78,9 +78,9 @@ Use `list` to see all your bookmarks and commands (golinks comes with several us
 
 Support the ongoing development of Bitcask!
 
-**Sponser**
+**Sponsor**
 
-- Become a [Sponser](https://www.patreon.com/prologic)
+- Become a [Sponsor](https://www.patreon.com/prologic)
 
 ## Contributing
 
