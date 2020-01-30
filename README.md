@@ -1,8 +1,13 @@
 # golinks
 
-[![Build Status](https://cloud.drone.io/api/badges/prologic/golinks/status.svg)](https://cloud.drone.io/prologic/golinks)
+![](https://github.com/prologic/golinks/workflows/Coverage/badge.svg)
+![](https://github.com/prologic/golinks/workflows/Docker/badge.svg)
+![](https://github.com/prologic/golinks/workflows/Go/badge.svg)
+![](https://github.com/prologic/golinks/workflows/ReviewDog/badge.svg)
+
 [![CodeCov](https://codecov.io/gh/prologic/golinks/branch/master/graph/badge.svg)](https://codecov.io/gh/prologic/golinks)
 [![Go Report Card](https://goreportcard.com/badge/prologic/golinks)](https://goreportcard.com/report/prologic/golinks)
+[![codebeat badge](https://codebeat.co/badges/15fba8a5-3044-4f40-936f-9e0f5d5d1fd9)](https://codebeat.co/projects/github-com-prologic-bitcask-master)
 [![GoDoc](https://godoc.org/github.com/prologic/golinks?status.svg)](https://godoc.org/github.com/prologic/golinks) 
 [![GitHub license](https://img.shields.io/github/license/prologic/golinks.svg)](https://github.com/prologic/golinks)
 
