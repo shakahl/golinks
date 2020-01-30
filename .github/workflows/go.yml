@@ -1,0 +1,33 @@
+name: Go
+on: [pull_request]
+jobs:
+  test:
+    name: Build and Test
+    strategy:
+      matrix:
+        go-version: [1.12.x, 1.13.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go-version }}
+        id: go
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build
+        run: go build -v .
+      - name: Test
+        run: go test -v -race .
+
+  auto-merge:
+    name: Auto merge
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - name: Auto merge
+        uses: ridedott/dependabot-auto-merge-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
