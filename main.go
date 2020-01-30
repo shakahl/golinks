@@ -56,9 +56,11 @@ func main() {
 	}
 	defer db.Close()
 
-	err = EnsureDefaultBookmarks()
-	if err != nil {
-		log.Fatal(err)
+	if db.Len() == 0 {
+		err = EnsureDefaultBookmarks()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	NewServer(bind, cfg).ListenAndServe()
