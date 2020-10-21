@@ -63,5 +63,13 @@ func main() {
 		}
 	}
 
-	NewServer(bind, cfg).ListenAndServe()
+	svr, err := NewServer(bind, cfg)
+	if err != nil {
+		log.Fatalf("error creating server: %s", err)
+	}
+
+	log.Printf("%s listening on http://%s", FullVersion(), bind)
+	if err := svr.Run(); err != nil {
+		log.Fatalf("error running or shutting down server: %s", err)
+	}
 }

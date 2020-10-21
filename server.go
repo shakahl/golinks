@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -8,8 +9,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
 	"sort"
 	"strings"
+	"syscall"
 	"time"
 
 	// Logging
@@ -65,6 +69,7 @@ type Server struct {
 	config    Config
 	templates *Templates
 	router    *httprouter.Router
+	server    *http.Server
 
 	// Logger
 	logger *logger.Logger
@@ -257,20 +262,53 @@ func (s *Server) StatsHandler() httprouter.Handle {
 	}
 }
 
+// Shutdown ...
+func (s *Server) Shutdown(ctx context.Context) error {
+	if err := s.server.Shutdown(ctx); err != nil {
+		log.Printf("error shutting down server: %s", err)
+		return err
+	}
+
+	if err := db.Close(); err != nil {
+		log.Printf("error closing store: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// Run ...
+func (s *Server) Run() (err error) {
+	idleConnsClosed := make(chan struct{})
+	go func() {
+		sigch := make(chan os.Signal, 1)
+		signal.Notify(sigch, syscall.SIGINT, syscall.SIGTERM)
+		sig := <-sigch
+		log.Printf("Received signal %s", sig)
+
+		log.Printf("Shutting down...")
+
+		// We received an interrupt signal, shut down.
+		if err = s.Shutdown(context.Background()); err != nil {
+			// Error from closing listeners, or context timeout:
+			log.Fatalf("Error shutting down HTTP server: %s", err)
+		}
+		close(idleConnsClosed)
+	}()
+
+	if err = s.ListenAndServe(); err != http.ErrServerClosed {
+		// Error starting or closing listener:
+		log.Fatalf("HTTP server ListenAndServe: %s", err)
+	}
+
+	<-idleConnsClosed
+
+	return
+}
+
 // ListenAndServe ...
-func (s *Server) ListenAndServe() {
-	log.Fatal(
-		http.ListenAndServe(
-			s.bind,
-			s.logger.Handler(
-				s.stats.Handler(
-					gziphandler.GzipHandler(
-						s.router,
-					),
-				),
-			),
-		),
-	)
+func (s *Server) ListenAndServe() error {
+	return s.server.ListenAndServe()
 }
 
 func (s *Server) initRoutes() {
@@ -286,12 +324,26 @@ func (s *Server) initRoutes() {
 }
 
 // NewServer ...
-func NewServer(bind string, config Config) *Server {
+func NewServer(bind string, config Config) (*Server, error) {
+	router := httprouter.New()
+
 	server := &Server{
 		bind:      bind,
 		config:    config,
-		router:    httprouter.New(),
+		router:    router,
 		templates: NewTemplates("base"),
+
+		server: &http.Server{
+			Addr: bind,
+			Handler: logger.New(logger.Options{
+				Prefix:               "twtxt",
+				RemoteAddressHeaders: []string{"X-Forwarded-For"},
+			}).Handler(
+				gziphandler.GzipHandler(
+					router,
+				),
+			),
+		},
 
 		// Logger
 		logger: logger.New(logger.Options{
@@ -326,5 +378,5 @@ func NewServer(bind string, config Config) *Server {
 
 	server.initRoutes()
 
-	return server
+	return server, nil
 }

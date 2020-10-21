@@ -34,7 +34,9 @@ func (e Explode) Exec(w http.ResponseWriter, r *http.Request, args []string) err
 func TestRender(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 
 	s.render("index", w, nil)
@@ -46,7 +48,9 @@ func TestRender(t *testing.T) {
 func TestRenderError(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 
 	s.render("asdf", w, nil)
@@ -57,7 +61,9 @@ func TestRenderError(t *testing.T) {
 func TestIndex(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/", nil)
 	p := httprouter.Params{}
@@ -70,7 +76,9 @@ func TestIndex(t *testing.T) {
 func TestOpenSearch(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/opensearch.xml", nil)
 	p := httprouter.Params{}
@@ -83,7 +91,9 @@ func TestOpenSearch(t *testing.T) {
 func TestCommand(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=ping", nil)
 	p := httprouter.Params{}
@@ -104,7 +114,9 @@ func TestCommand(t *testing.T) {
 func TestCaseInsensitive(t *testing.T) {
 	assert := assert.New(t)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=Ping", nil)
 	p := httprouter.Params{}
@@ -128,7 +140,9 @@ func TestInvalidCommand(t *testing.T) {
 	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
-	s := NewServer(":8000", Config{URL: ""})
+	s, err := NewServer(":8000", Config{URL: ""})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=asdf", nil)
 	p := httprouter.Params{}
@@ -146,7 +160,9 @@ func TestInvalidCommandDefaultURL(t *testing.T) {
 	db, _ = bitcask.Open("test.db")
 	defer db.Close()
 
-	s := NewServer(":8000", Config{URL: DefaultURL})
+	s, err := NewServer(":8000", Config{URL: DefaultURL})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=asdf", nil)
 	p := httprouter.Params{}
@@ -171,7 +187,9 @@ func TestCommandError(t *testing.T) {
 
 	RegisterCommand("explode", Explode{})
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=explode", nil)
 	p := httprouter.Params{}
@@ -192,7 +210,9 @@ func TestCommandBookmark(t *testing.T) {
 	err := EnsureDefaultBookmarks()
 	assert.Nil(err)
 
-	s := NewServer(":8000", Config{})
+	s, err := NewServer(":8000", Config{})
+	assert.NoError(err)
+
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/?q=g%20foo%20bar", nil)
 	p := httprouter.Params{}
