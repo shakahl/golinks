@@ -336,7 +336,7 @@ func NewServer(bind string, config Config) (*Server, error) {
 		server: &http.Server{
 			Addr: bind,
 			Handler: logger.New(logger.Options{
-				Prefix:               "twtxt",
+				Prefix:               "golinks",
 				RemoteAddressHeaders: []string{"X-Forwarded-For"},
 			}).Handler(
 				gziphandler.GzipHandler(
