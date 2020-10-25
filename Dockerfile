@@ -15,7 +15,7 @@ COPY . /go/src/github.com/$REPO
 RUN make TAG=$TAG BUILD=$BUILD build
 
 # Runtime
-FROM scratch
+FROM alpine:latest
 
 ENV APP golinks
 ENV REPO prologic/$APP
@@ -24,7 +24,7 @@ LABEL golinks.app main
 
 COPY .dockerfiles/start.sh /start.sh
 
-COPY --from=build /go/src/github.com/${REPO}/${APP} /${APP}
+COPY --from=build /go/src/github.com/${REPO}/${APP} /usr/local/bin/${APP}
 
 EXPOSE 8000/tcp
 
